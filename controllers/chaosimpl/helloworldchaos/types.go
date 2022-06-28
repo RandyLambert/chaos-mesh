@@ -3,13 +3,13 @@ package helloworldchaos
 import (
 	"context"
 
-	"github.com/go-logr/logr"
-	"go.uber.org/fx"
-	"sigs.k8s.io/controller-runtime/pkg/client"
-
 	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
 	impltypes "github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/types"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/utils"
+	"github.com/chaos-mesh/chaos-mesh/pkg/chaosdaemon/pb"
+	"github.com/go-logr/logr"
+	"go.uber.org/fx"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 type Impl struct {
@@ -18,15 +18,29 @@ type Impl struct {
 	decoder *utils.ContainerRecordDecoder
 }
 
-// Apply applies HelloWorldChaos
+// Apply applies KernelChaos
 func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
-	impl.Log.Info("Hello world!")
+	impl.Log.Info("Apply helloworld chaos")
+	decodedContainer, err := impl.decoder.DecodeContainerRecord(ctx, records[index], obj)
+	if err != nil {
+		return v1alpha1.NotInjected, err
+	}
+	pbClient := decodedContainer.PbClient
+	containerId := decodedContainer.ContainerId
+
+	_, err = pbClient.ExecHelloWorldChaos(ctx, &pb.ExecHelloWorldRequest{
+		ContainerId: containerId,
+	})
+	if err != nil {
+		return v1alpha1.NotInjected, err
+	}
+
 	return v1alpha1.Injected, nil
 }
 
 // Recover means the reconciler recovers the chaos action
 func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
-	impl.Log.Info("Goodbye world!")
+	impl.Log.Info("Recover helloworld chaos")
 	return v1alpha1.NotInjected, nil
 }
 

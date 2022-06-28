@@ -1,0 +1,10 @@
+apiVersion: chaos-mesh.org/v1alpha1
+kind: HelloWorldChaos
+metadata:
+  name: busybox-helloworld-chaos
+spec:
+  selector:
+    namespaces:
+      - busybox
+  mode: all
+  duration: 1h

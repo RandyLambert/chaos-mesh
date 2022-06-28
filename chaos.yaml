@@ -1,0 +1,11 @@
+apiVersion: chaos-mesh.org/v1alpha1
+kind: HelloWorldChaos
+metadata:
+  name: hello-world
+  namespace: chaos-testing
+spec:
+  selector:
+    namespaces:
+      - busybox
+  mode: one
+  duration: 1h

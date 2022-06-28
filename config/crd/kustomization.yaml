@@ -25,6 +25,7 @@ resources:
 - bases/chaos-mesh.org_physicalmachines.yaml
 - bases/chaos-mesh.org_blockchaos.yaml
 - bases/chaos-mesh.org_statuschecks.yaml
+- bases/chaos-mesh.org_helloworldchaos.yaml # 新增一行
 # +kubebuilder:scaffold:crdkustomizeresource
 
 patchesStrategicMerge:
